@@ -1,0 +1,13 @@
+Options -Indexes
+RewriteEngine On
+
+# Block direct access to sensitive directories
+RewriteRule ^(config|models|controllers|views|routes)/ - [F,L]
+
+# Allow uploads directory
+RewriteRule ^uploads/ - [L]
+
+# Route everything through index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
