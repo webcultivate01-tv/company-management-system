@@ -119,18 +119,30 @@ require_once __DIR__ . '/../layouts/admin-header.php';
     <div class="absolute inset-0 bg-black/50" onclick="closeResetModal()"></div>
     <div class="relative flex items-center justify-center min-h-screen p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-1">Reset Password</h3>
-            <p class="text-sm text-gray-500 mb-5" id="resetUserName"></p>
-            <form id="resetForm" method="POST">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-base font-semibold text-gray-800">Reset Password</h3>
+                    <p class="text-xs text-gray-500" id="resetUserName"></p>
+                </div>
+            </div>
+            <div class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-xs text-amber-700 mb-5">
+                ⚠️ The old password cannot be recovered. Set a new password and share it with the employee.
+            </div>
+            <form id="resetForm" method="POST" novalidate>
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">New Password</label>
-                    <input type="password" name="password" required minlength="6"
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">New Password <span class="text-red-500">*</span></label>
+                    <input type="text" name="password" id="newPwd" required minlength="6"
+                           placeholder="Min 6 characters"
                            class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100">
+                    <p class="text-red-500 text-xs mt-1 hidden" id="pwdErr">Password must be at least 6 characters</p>
                 </div>
                 <div class="flex gap-3">
                     <button type="button" onclick="closeResetModal()"
                             class="flex-1 px-4 py-2.5 border border-gray-200 text-gray-600 rounded-xl text-sm hover:bg-gray-50">Cancel</button>
-                    <button type="submit" class="flex-1 px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm hover:bg-indigo-700">Reset</button>
+                    <button type="submit" class="flex-1 px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700">Reset Password</button>
                 </div>
             </form>
         </div>
@@ -140,12 +152,21 @@ require_once __DIR__ . '/../layouts/admin-header.php';
 <script>
 function openResetModal(id, name) {
     document.getElementById('resetModal').classList.remove('hidden');
-    document.getElementById('resetUserName').textContent = 'Resetting password for: ' + name;
+    document.getElementById('resetUserName').textContent = name;
     document.getElementById('resetForm').action = '<?= BASE_URL ?>/admin/users/reset-password/' + id;
+    document.getElementById('newPwd').value = '';
+    document.getElementById('pwdErr').classList.add('hidden');
 }
 function closeResetModal() {
     document.getElementById('resetModal').classList.add('hidden');
 }
+document.getElementById('resetForm').addEventListener('submit', function(e) {
+    const pwd = document.getElementById('newPwd').value;
+    if (pwd.length < 6) {
+        e.preventDefault();
+        document.getElementById('pwdErr').classList.remove('hidden');
+    }
+});
 </script>
 
 <?php require_once __DIR__ . '/../layouts/admin-footer.php'; ?>

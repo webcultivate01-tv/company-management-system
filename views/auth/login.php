@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In — CompanyMS</title>
+    <title>Sign In — WebCultivate Software Solutions</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -37,13 +37,13 @@
     <div class="relative w-full max-w-md">
         <!-- Logo area -->
         <div class="text-center mb-8 fade-up">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-2xl mb-4 floating">
-                <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-2xl mb-4 floating">
+                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
             </div>
-            <h1 class="text-3xl font-bold text-white">CompanyMS</h1>
-            <p class="text-white/70 text-sm mt-1">Company Management System</p>
+            <h1 class="text-3xl font-bold text-white">WebCultivate</h1>
+            <p class="text-white/80 text-base font-medium mt-1">Software Solutions</p>
         </div>
 
         <!-- Login Card -->

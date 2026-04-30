@@ -2,8 +2,13 @@
 // Application Configuration
 define('APP_NAME', 'WebCultivate Software Solutions');
 define('APP_VERSION', '1.0.0');
-define('BASE_URL', 'http://localhost:8000');
-define('APP_ENV', 'development'); // production | development
+
+// Auto-detect BASE_URL — works on localhost, XAMPP, and Hostinger
+$scheme   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host     = $_SERVER['HTTP_HOST'] ?? 'localhost';
+define('BASE_URL', $scheme . '://' . $host);
+
+define('APP_ENV', 'production'); // production | development
 
 // Session settings
 define('SESSION_LIFETIME', 7200); // 2 hours

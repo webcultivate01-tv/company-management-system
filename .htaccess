@@ -4,10 +4,10 @@ RewriteEngine On
 # Block direct access to sensitive directories
 RewriteRule ^(config|models|controllers|views|routes)/ - [F,L]
 
-# Allow uploads directory
-RewriteRule ^uploads/ - [L]
+# Allow static files and uploads directly
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
 
-# Route everything through index.php
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+# Route everything else through index.php
+RewriteRule ^ index.php [L]
