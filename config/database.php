@@ -7,7 +7,7 @@ class Database {
     private \MongoDB\Database $db;
 
     // ─── CONFIGURE YOUR MONGODB ATLAS URI HERE ───────────────────────────────
-    private string $uri      = 'mongodb+srv://tejasmehar7_db_user:Admin1234@cluster0.9fl0gp4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+    private string $uri      = 'mongodb+srv://webcultivate01_db_user:7447746247@cms.0d4hsma.mongodb.net/?retryWrites=true&w=majority&appName=CMS';
     private string $dbName   = 'company_management';
     // ─────────────────────────────────────────────────────────────────────────
 

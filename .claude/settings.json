@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(C:\\\\xampp\\\\php\\\\php.exe -l index.php)",
+      "Bash(C:\\\\xampp\\\\php\\\\php.exe -l router.php)",
+      "Bash(C:\\\\xampp\\\\php\\\\php.exe -l config/app.php)",
+      "Bash(C:\\\\xampp\\\\php\\\\php.exe -l config/database.php)",
+      "Bash(C:\\\\xampp\\\\php\\\\php.exe -l config/mail.php)"
+    ]
+  }
+}

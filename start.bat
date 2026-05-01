@@ -1,4 +1,4 @@
 @echo off
-cd /d "C:\xampp\htdocs\company-management-system"
-start "" "http://localhost:8000/login"
-C:\xampp\php\php.exe -S localhost:8000 index.php
+cd /d "c:\Users\USER\Desktop\cmd\company-management-system"
+start "" "http://127.0.0.1:8000/login"
+C:\xampp\php\php.exe -S 0.0.0.0:8000 router.php
