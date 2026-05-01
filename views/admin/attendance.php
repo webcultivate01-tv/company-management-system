@@ -80,8 +80,16 @@ require_once __DIR__ . '/../layouts/admin-header.php';
                         <?= htmlspecialchars($userMap[$rec['userId']] ?? $rec['userId']) ?>
                     </td>
                     <td class="px-6 py-3 text-gray-600"><?= $rec['date'] ?></td>
-                    <td class="px-6 py-3 text-gray-600"><?= !empty($rec['checkIn']) ? date('g:i A', strtotime($rec['checkIn'])) : '—' ?></td>
-                    <td class="px-6 py-3 text-gray-600"><?= !empty($rec['checkOut']) ? date('g:i A', strtotime($rec['checkOut'])) : '—' ?></td>
+                    <?php
+                        $aSessions = array_map(fn($s) => (array)$s, (array)($rec['sessions'] ?? []));
+                        $firstIn   = $aSessions[0]['in']  ?? null;
+                        $lastOut   = null;
+                        foreach (array_reverse($aSessions) as $s) {
+                            if (!empty($s['out'])) { $lastOut = $s['out']; break; }
+                        }
+                    ?>
+                    <td class="px-6 py-3 text-gray-600"><?= $firstIn  ? htmlspecialchars($firstIn)  : '—' ?></td>
+                    <td class="px-6 py-3 text-gray-600"><?= $lastOut  ? htmlspecialchars($lastOut)  : '—' ?></td>
                     <td class="px-6 py-3 font-medium text-gray-700"><?= $rec['totalHours'] ? $rec['totalHours'] . 'h' : '—' ?></td>
                     <td class="px-6 py-3">
                         <?php
