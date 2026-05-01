@@ -6,34 +6,47 @@ class Attendance extends BaseModel {
 
     public function getTodayRecord(string $userId): ?array {
         $today = date('Y-m-d');
-        $result = $this->collection->findOne([
-            'userId' => $userId,
-            'date'   => $today,
-        ]);
+        $result = $this->collection->findOne(['userId' => $userId, 'date' => $today]);
         return $result ? (array)$result : null;
     }
 
     public function checkIn(string $userId): array {
-        $existing = $this->getTodayRecord($userId);
-        if ($existing) {
-            return ['success' => false, 'message' => 'Already checked in today'];
+        $now         = new \DateTime('now', new \DateTimeZone('Asia/Kolkata'));
+        $timeStr     = $now->format('g:i A');
+        $officeStart = defined('OFFICE_START_TIME') ? OFFICE_START_TIME : '09:30';
+        $existing    = $this->getTodayRecord($userId);
+
+        if (!$existing) {
+            // First check-in of the day
+            $status = ($now->format('H:i:s') > $officeStart . ':00') ? 'late' : 'present';
+            $this->insertOne([
+                'userId'     => $userId,
+                'date'       => date('Y-m-d'),
+                'status'     => $status,
+                'totalHours' => 0,
+                'sessions'   => [['in' => $timeStr, 'out' => null, 'hours' => null]],
+            ]);
+            return ['success' => true, 'time' => $timeStr, 'status' => $status];
         }
 
-        $now    = new \DateTime('now', new \DateTimeZone('Asia/Kolkata'));
-        $timeStr = $now->format('H:i:s');
-        $officeStart = defined('OFFICE_START_TIME') ? OFFICE_START_TIME : '09:30';
-        $status = ($timeStr > $officeStart . ':00') ? 'late' : 'present';
+        $sessions = (array)($existing['sessions'] ?? []);
+        $sessions = array_map(fn($s) => (array)$s, $sessions);
 
-        $id = $this->insertOne([
-            'userId'     => $userId,
-            'date'       => date('Y-m-d'),
-            'checkIn'    => $now->format('g:i A'),
-            'checkOut'   => null,
-            'totalHours' => null,
-            'status'     => $status,
-        ]);
+        // Block if last session is still open (not checked out)
+        $last = end($sessions);
+        if ($last && empty($last['out'])) {
+            return ['success' => false, 'message' => 'Please check out first before checking in again'];
+        }
 
-        return ['success' => true, 'id' => $id, 'time' => $timeStr, 'status' => $status];
+        // Block more than 2 sessions
+        if (count($sessions) >= 2) {
+            return ['success' => false, 'message' => 'Maximum 2 check-ins per day reached'];
+        }
+
+        // Second check-in
+        $sessions[] = ['in' => $timeStr, 'out' => null, 'hours' => null];
+        $this->updateById((string)$existing['_id'], ['sessions' => $sessions]);
+        return ['success' => true, 'time' => $timeStr, 'status' => $existing['status']];
     }
 
     public function checkOut(string $userId): array {
@@ -41,25 +54,34 @@ class Attendance extends BaseModel {
         if (!$record) {
             return ['success' => false, 'message' => 'No check-in found for today'];
         }
-        if (!empty($record['checkOut'])) {
-            return ['success' => false, 'message' => 'Already checked out today'];
+
+        $sessions = array_map(fn($s) => (array)$s, (array)($record['sessions'] ?? []));
+        $openIdx  = null;
+        foreach ($sessions as $i => $s) {
+            if (empty($s['out'])) { $openIdx = $i; break; }
         }
 
-        $now     = new \DateTime('now', new \DateTimeZone('Asia/Kolkata'));
-        $timeStr = $now->format('H:i:s');
+        if ($openIdx === null) {
+            return ['success' => false, 'message' => 'No open check-in to check out from'];
+        }
 
-        $checkInTime  = \DateTime::createFromFormat('g:i A', $record['checkIn']) 
-                        ?: \DateTime::createFromFormat('H:i:s', $record['checkIn']);
-        $checkOutTime = \DateTime::createFromFormat('H:i:s', $timeStr);
-        $diff         = $checkOutTime->diff($checkInTime);
-        $totalHours   = round($diff->h + ($diff->i / 60), 2);
+        $now      = new \DateTime('now', new \DateTimeZone('Asia/Kolkata'));
+        $timeStr  = $now->format('g:i A');
+        $inTime   = \DateTime::createFromFormat('g:i A', $sessions[$openIdx]['in']);
+        $diff     = $now->diff($inTime);
+        $sesHours = round($diff->h + ($diff->i / 60), 2);
+
+        $sessions[$openIdx]['out']   = $timeStr;
+        $sessions[$openIdx]['hours'] = $sesHours;
+
+        $totalHours = array_sum(array_column($sessions, 'hours'));
 
         $this->updateById((string)$record['_id'], [
-            'checkOut'   => $now->format('g:i A'),
-            'totalHours' => $totalHours,
+            'sessions'   => $sessions,
+            'totalHours' => round($totalHours, 2),
         ]);
 
-        return ['success' => true, 'time' => $timeStr, 'totalHours' => $totalHours];
+        return ['success' => true, 'time' => $timeStr, 'totalHours' => round($totalHours, 2)];
     }
 
     public function getUserMonthlyAttendance(string $userId, string $yearMonth): array {
@@ -99,6 +121,22 @@ class Attendance extends BaseModel {
                 'totalHours' => ['$sum' => '$totalHours'],
                 'totalDays'  => ['$sum' => 1],
             ]],
+        ];
+        $cursor = $this->collection->aggregate($pipeline);
+        return iterator_to_array($cursor, false);
+    }
+
+    public function getTopPerformers(string $yearMonth, int $limit = 5): array {
+        $pipeline = [
+            ['$match' => ['date' => ['$regex' => new \MongoDB\BSON\Regex($yearMonth, '')]]],
+            ['$group' => [
+                '_id'        => '$userId',
+                'totalHours' => ['$sum' => '$totalHours'],
+                'totalDays'  => ['$sum' => 1],
+                'lateCount'  => ['$sum' => ['$cond' => [['$eq' => ['$status', 'late']], 1, 0]]],
+            ]],
+            ['$sort' => ['totalHours' => -1, 'totalDays' => -1]],
+            ['$limit' => $limit],
         ];
         $cursor = $this->collection->aggregate($pipeline);
         return iterator_to_array($cursor, false);

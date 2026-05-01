@@ -27,8 +27,24 @@ class AdminController extends BaseController {
         $todayPresent  = $this->attendanceModel->getTeamTodayStatus();
         $teamHours     = $this->attendanceModel->getTeamMonthlyHours($yearMonth);
         $totalUsers    = $this->userModel->count(['role' => ['$ne' => 'admin'], 'isActive' => true]);
-
         $totalTeamHours = array_sum(array_column($teamHours, 'totalHours'));
+
+        // Top performers: enrich with user data
+        $rawTop    = $this->attendanceModel->getTopPerformers($yearMonth, 5);
+        $topPerformers = [];
+        foreach ($rawTop as $row) {
+            $u = $this->userModel->findById((string)$row['_id']);
+            if ($u) {
+                $topPerformers[] = [
+                    'name'        => $u['name'],
+                    'position'    => $u['position'] ?? $u['role'],
+                    'profileImage'=> $u['profileImage'] ?? '',
+                    'totalHours'  => round((float)$row['totalHours'], 1),
+                    'totalDays'   => (int)$row['totalDays'],
+                    'lateCount'   => (int)$row['lateCount'],
+                ];
+            }
+        }
 
         $this->view('admin/dashboard', [
             'flash'          => $this->getFlash(),
@@ -38,6 +54,7 @@ class AdminController extends BaseController {
             'totalUsers'     => $totalUsers,
             'totalTeamHours' => round($totalTeamHours, 2),
             'yearMonth'      => $yearMonth,
+            'topPerformers'  => $topPerformers,
         ]);
     }
 }

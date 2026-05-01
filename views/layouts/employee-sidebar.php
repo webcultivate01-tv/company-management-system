@@ -6,14 +6,12 @@ function empIsActive(string $prefix): string {
 }
 ?>
 <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-violet-900 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col">
-    <div class="flex items-center justify-between h-16 px-6 bg-violet-950">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-violet-400 rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-            </div>
+    <div class="flex items-center justify-between h-16 px-4 bg-white border-b border-violet-800">
+        <div class="flex items-center gap-2.5">
+            <img src="<?= BASE_URL ?>/public/logo.png" alt="Logo" class="h-8 w-8 object-contain flex-shrink-0">
             <div class="leading-tight">
-                <span class="text-white font-bold text-sm block">WebCultivate</span>
-                <span class="text-violet-300 text-xs block">Software Solutions</span>
+                <span class="text-gray-800 font-bold text-sm block">WebCultivate</span>
+                <span class="text-gray-400 text-xs block">Software Solutions</span>
             </div>
         </div>
         <button id="closeSidebar" class="lg:hidden text-violet-300 hover:text-white">

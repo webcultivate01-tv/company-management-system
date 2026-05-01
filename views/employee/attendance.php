@@ -18,13 +18,26 @@ require_once __DIR__ . '/../layouts/employee-header.php';
            class="px-4 py-2 bg-violet-600 text-white rounded-xl text-sm font-medium hover:bg-violet-700 transition-colors">
             Check In Now
         </a>
-        <?php elseif (empty($today['checkOut'])): ?>
+        <?php else: ?>
+        <?php
+            $aSessions = array_map(fn($s)=>(array)$s, (array)($today['sessions']??[]));
+            $aLast = !empty($aSessions) ? end($aSessions) : null;
+            $aCanIn  = $aLast && !empty($aLast['out']) && count($aSessions) < 2;
+            $aCanOut = $aLast && empty($aLast['out']);
+        ?>
+        <?php if ($aCanOut): ?>
         <a href="<?= BASE_URL ?>/employee/check-out"
            class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors">
             Check Out Now
         </a>
+        <?php elseif ($aCanIn): ?>
+        <a href="<?= BASE_URL ?>/employee/check-in"
+           class="px-4 py-2 bg-violet-600 text-white rounded-xl text-sm font-medium hover:bg-violet-700 transition-colors">
+            Check In (Session 2)
+        </a>
         <?php else: ?>
         <span class="px-4 py-2 bg-gray-100 text-gray-500 rounded-xl text-sm">Completed for today</span>
+        <?php endif; ?>
         <?php endif; ?>
     </div>
 </div>
@@ -65,9 +78,9 @@ require_once __DIR__ . '/../layouts/employee-header.php';
             <tr>
                 <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Date</th>
                 <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Day</th>
-                <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Check In</th>
-                <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Check Out</th>
-                <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Hours</th>
+                <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Session 1</th>
+                <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Session 2</th>
+                <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Total Hours</th>
                 <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
             </tr>
         </thead>
@@ -75,17 +88,21 @@ require_once __DIR__ . '/../layouts/employee-header.php';
             <?php foreach (array_reverse($records) as $rec):
                 $sc = ['present'=>'bg-emerald-100 text-emerald-700','late'=>'bg-amber-100 text-amber-700','absent'=>'bg-red-100 text-red-700'];
                 $sc = $sc[$rec['status']??'present'] ?? 'bg-gray-100 text-gray-600';
-                $dayName = date('D', strtotime($rec['date']));
+                $dayName  = date('D', strtotime($rec['date']));
+                $rSessions = array_map(fn($s)=>(array)$s, (array)($rec['sessions']??[]));
+                $s1 = $rSessions[0] ?? null; $s2 = $rSessions[1] ?? null;
             ?>
             <tr class="hover:bg-gray-50 <?= $rec['date'] === date('Y-m-d') ? 'bg-violet-50 border-l-2 border-l-violet-500' : '' ?>">
                 <td class="px-5 py-3 font-medium text-gray-800"><?= $rec['date'] ?></td>
                 <td class="px-5 py-3 text-gray-500 text-xs"><?= $dayName ?></td>
-                <td class="px-5 py-3 text-gray-700"><?= !empty($rec['checkIn']) ? date('g:i A', strtotime($rec['checkIn'])) : '—' ?></td>
-                <td class="px-5 py-3 text-gray-700"><?= !empty($rec['checkOut']) ? date('g:i A', strtotime($rec['checkOut'])) : '—' ?></td>
-                <td class="px-5 py-3 font-medium text-gray-700"><?= $rec['totalHours'] ? $rec['totalHours'].'h' : '—' ?></td>
-                <td class="px-5 py-3">
-                    <span class="px-2 py-0.5 rounded-full text-xs font-medium <?= $sc ?>"><?= ucfirst($rec['status']??'present') ?></span>
+                <td class="px-5 py-3 text-gray-700 text-xs">
+                    <?= $s1 ? '<span class="text-violet-700 font-medium">'.htmlspecialchars($s1['in']).'</span> &rarr; '.(!empty($s1['out']) ? '<span class="text-emerald-700 font-medium">'.htmlspecialchars($s1['out']).'</span>' : '<span class="text-gray-400">&hellip;</span>') : '—' ?>
                 </td>
+                <td class="px-5 py-3 text-gray-700 text-xs">
+                    <?= $s2 ? '<span class="text-violet-700 font-medium">'.htmlspecialchars($s2['in']).'</span> &rarr; '.(!empty($s2['out']) ? '<span class="text-emerald-700 font-medium">'.htmlspecialchars($s2['out']).'</span>' : '<span class="text-gray-400">&hellip;</span>') : '<span class="text-gray-300">—</span>' ?>
+                </td>
+                <td class="px-5 py-3 font-bold text-gray-700"><?= $rec['totalHours'] ? $rec['totalHours'].'h' : '—' ?></td>
+                <td class="px-5 py-3"><span class="px-2 py-0.5 rounded-full text-xs font-medium <?= $sc ?>"><?= ucfirst($rec['status']??'present') ?></span></td>
             </tr>
             <?php endforeach; ?>
         </tbody>

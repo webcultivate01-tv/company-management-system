@@ -13,6 +13,8 @@ $routes = [
 
     // Users
     'GET:admin/users'               => ['UserController', 'index'],
+    'GET:admin/users/detail/{id}'       => ['UserController', 'detail'],
+    'GET:admin/users/delete-aadhar/{id}' => ['UserController', 'deleteAadhar'],
     'GET:admin/users/create'        => ['UserController', 'create'],
     'POST:admin/users/create'       => ['UserController', 'create'],
     'GET:admin/users/edit/{id}'     => ['UserController', 'edit'],
@@ -20,6 +22,14 @@ $routes = [
     'GET:admin/users/delete/{id}'   => ['UserController', 'delete'],
     'GET:admin/users/toggle/{id}'   => ['UserController', 'toggleActive'],
     'POST:admin/users/reset-password/{id}' => ['UserController', 'resetPassword'],
+
+    // Positions
+    'GET:admin/positions'              => ['PositionController', 'index'],
+    'GET:admin/positions/create'       => ['PositionController', 'create'],
+    'POST:admin/positions/create'      => ['PositionController', 'create'],
+    'GET:admin/positions/edit/{id}'    => ['PositionController', 'edit'],
+    'POST:admin/positions/edit/{id}'   => ['PositionController', 'edit'],
+    'GET:admin/positions/delete/{id}'  => ['PositionController', 'delete'],
 
     // Admin Profile
     'GET:admin/profile'  => ['UserController', 'profile'],

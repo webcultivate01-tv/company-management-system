@@ -17,11 +17,11 @@ class AttendanceController extends BaseController {
         $this->requireAuth();
         $result = $this->attendanceModel->checkIn($_SESSION['user_id']);
         if ($result['success']) {
-            $this->setFlash('success', 'Checked in at ' . date('g:i A', strtotime($result['time'])) . ' (' . ucfirst($result['status']) . ')');
+            $this->setFlash('success', 'Checked in at ' . $result['time'] . ' (' . ucfirst($result['status']) . ')');
         } else {
             $this->setFlash('error', $result['message']);
         }
-        $this->redirect('employee/attendance');
+        $this->redirect('employee/dashboard');
     }
 
     // Employee: check out
@@ -29,11 +29,11 @@ class AttendanceController extends BaseController {
         $this->requireAuth();
         $result = $this->attendanceModel->checkOut($_SESSION['user_id']);
         if ($result['success']) {
-            $this->setFlash('success', 'Checked out at ' . date('g:i A', strtotime($result['time'])) . '. Total: ' . $result['totalHours'] . ' hrs');
+            $this->setFlash('success', 'Checked out at ' . $result['time'] . '. Total today: ' . $result['totalHours'] . ' hrs');
         } else {
             $this->setFlash('error', $result['message']);
         }
-        $this->redirect('employee/attendance');
+        $this->redirect('employee/dashboard');
     }
 
     // Employee: view own attendance

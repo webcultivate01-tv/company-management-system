@@ -8,17 +8,15 @@ function isActive(string $prefix): string {
 <!-- Sidebar -->
 <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-indigo-900 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col">
     <!-- Logo -->
-    <div class="flex items-center justify-between h-16 px-6 bg-indigo-950">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-indigo-400 rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-            </div>
+    <div class="flex items-center justify-between h-16 px-4 bg-white border-b border-gray-100">
+        <div class="flex items-center gap-2.5">
+            <img src="<?= BASE_URL ?>/public/logo.png" alt="Logo" class="h-8 w-8 object-contain flex-shrink-0">
             <div class="leading-tight">
-                <span class="text-white font-bold text-sm block">WebCultivate</span>
-                <span class="text-indigo-300 text-xs block">Software Solutions</span>
+                <span class="text-gray-800 font-bold text-sm block">WebCultivate</span>
+                <span class="text-gray-400 text-xs block">Software Solutions</span>
             </div>
         </div>
-        <button id="closeSidebar" class="lg:hidden text-indigo-300 hover:text-white">
+        <button id="closeSidebar" class="lg:hidden text-gray-400 hover:text-gray-600">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
     </div>
@@ -35,7 +33,11 @@ function isActive(string $prefix): string {
         </div>
         <a href="<?= BASE_URL ?>/admin/users" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors <?= isActive('admin/users') ?>">
             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-            Users
+            Employees
+        </a>
+        <a href="<?= BASE_URL ?>/admin/positions" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors <?= isActive('admin/positions') ?>">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            Positions
         </a>
         <a href="<?= BASE_URL ?>/admin/attendance" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors <?= isActive('admin/attendance') ?>">
             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
