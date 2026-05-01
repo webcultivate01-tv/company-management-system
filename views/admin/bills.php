@@ -12,16 +12,16 @@ require_once __DIR__ . '/../layouts/admin-header.php';
 <!-- Stats -->
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
     <div class="bg-white rounded-xl border border-gray-100 p-5">
-        <p class="text-xs text-gray-500 mb-1">Total Revenue</p>
-        <p class="text-2xl font-bold text-emerald-600">₹<?= number_format($stats['totalRevenue'], 0) ?></p>
+        <p class="text-xs text-gray-500 mb-1">Total Project Cost</p>
+        <p class="text-2xl font-bold text-indigo-600">₹<?= number_format(array_sum(array_column($payments, 'totalProjectCost')), 0) ?></p>
     </div>
     <div class="bg-white rounded-xl border border-gray-100 p-5">
-        <p class="text-xs text-gray-500 mb-1">Paid</p>
-        <p class="text-2xl font-bold text-indigo-600"><?= $stats['paidCount'] ?></p>
+        <p class="text-xs text-gray-500 mb-1">Total Received</p>
+        <p class="text-2xl font-bold text-emerald-600">₹<?= number_format(array_sum(array_column($payments, 'receivedAmount')), 0) ?></p>
     </div>
     <div class="bg-white rounded-xl border border-gray-100 p-5">
-        <p class="text-xs text-gray-500 mb-1">Pending</p>
-        <p class="text-2xl font-bold text-amber-500"><?= $stats['pendingCount'] ?></p>
+        <p class="text-xs text-gray-500 mb-1">Total Remaining</p>
+        <p class="text-2xl font-bold text-amber-500">₹<?= number_format(array_sum(array_column($payments, 'remainingAmount')), 0) ?></p>
     </div>
     <div class="bg-white rounded-xl border border-gray-100 p-5">
         <p class="text-xs text-gray-500 mb-1">Overdue</p>
@@ -48,6 +48,10 @@ require_once __DIR__ . '/../layouts/admin-header.php';
         </div>
         <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">Filter</button>
         <a href="<?= BASE_URL ?>/admin/payments/create" class="ml-auto px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm hover:bg-emerald-700">+ Add Bill</a>
+        <a href="<?= BASE_URL ?>/admin/export/payments/csv?month=<?= urlencode($yearMonth) ?>&status=<?= urlencode($status) ?>"
+           class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm">⬇ CSV</a>
+        <a href="<?= BASE_URL ?>/admin/export/payments/pdf?month=<?= urlencode($yearMonth) ?>&status=<?= urlencode($status) ?>" target="_blank"
+           class="px-3 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm">⬇ PDF</a>
     </form>
 </div>
 
@@ -62,7 +66,10 @@ require_once __DIR__ . '/../layouts/admin-header.php';
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Client</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Amount</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Project Cost</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Received</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Remaining</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Bill Amount</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Month</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Due Date</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Paid Date</th>
@@ -72,7 +79,7 @@ require_once __DIR__ . '/../layouts/admin-header.php';
             </thead>
             <tbody class="divide-y divide-gray-50">
                 <?php if (empty($payments)): ?>
-                <tr><td colspan="7" class="px-6 py-12 text-center text-gray-400">No bills found for this period</td></tr>
+                <tr><td colspan="10" class="px-6 py-12 text-center text-gray-400">No bills found for this period</td></tr>
                 <?php else: ?>
                 <?php foreach ($payments as $pay):
                     $pStatus = ['paid' => 'bg-emerald-100 text-emerald-700', 'unpaid' => 'bg-amber-100 text-amber-700', 'overdue' => 'bg-red-100 text-red-700'];
@@ -81,6 +88,9 @@ require_once __DIR__ . '/../layouts/admin-header.php';
                 ?>
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-3 font-medium text-gray-800"><?= htmlspecialchars($clientName) ?></td>
+                    <td class="px-6 py-3 font-semibold text-indigo-700">₹<?= number_format($pay['totalProjectCost'] ?? 0, 0) ?></td>
+                    <td class="px-6 py-3 font-semibold text-emerald-700">₹<?= number_format($pay['receivedAmount'] ?? 0, 0) ?></td>
+                    <td class="px-6 py-3 font-semibold text-amber-600">₹<?= number_format($pay['remainingAmount'] ?? 0, 0) ?></td>
                     <td class="px-6 py-3 font-semibold text-gray-800">₹<?= number_format($pay['amount'], 0) ?></td>
                     <td class="px-6 py-3 text-gray-600"><?= $pay['billingMonth'] ?></td>
                     <td class="px-6 py-3 <?= $pay['status'] === 'overdue' ? 'text-red-600 font-medium' : 'text-gray-600' ?>"><?= $pay['dueDate'] ?></td>

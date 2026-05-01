@@ -7,11 +7,17 @@ require_once __DIR__ . '/../layouts/admin-header.php';
     <div>
         <p class="text-sm text-gray-500"><?= count($users) ?> team members</p>
     </div>
-    <a href="<?= BASE_URL ?>/admin/users/create"
-       class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-        Add New User
-    </a>
+    <div class="flex items-center gap-2">
+        <a href="<?= BASE_URL ?>/admin/export/employees/csv"
+           class="inline-flex items-center gap-1.5 px-3 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-xl transition-colors">⬇ CSV</a>
+        <a href="<?= BASE_URL ?>/admin/export/employees/pdf" target="_blank"
+           class="inline-flex items-center gap-1.5 px-3 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-sm font-medium rounded-xl transition-colors">⬇ PDF</a>
+        <a href="<?= BASE_URL ?>/admin/users/create"
+           class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Add New User
+        </a>
+    </div>
 </div>
 
 <!-- Users Table -->

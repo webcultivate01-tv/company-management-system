@@ -13,7 +13,7 @@ require_once __DIR__ . '/../layouts/admin-header.php';
 
     <div class="bg-white rounded-2xl border border-gray-100 p-6">
         <h2 class="text-lg font-semibold text-gray-800 mb-6">New Payment Record</h2>
-        <form method="POST" class="space-y-5">
+        <form method="POST" class="space-y-5" id="paymentForm">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Client</label>
                 <select name="clientId" required id="clientSelect"
@@ -30,9 +30,28 @@ require_once __DIR__ . '/../layouts/admin-header.php';
                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400"
                        placeholder="Enter recurring plan ID if applicable">
             </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Total Project Cost (₹)</label>
+                <input type="number" name="totalProjectCost" id="totalProjectCost" step="0.01" min="0" required
+                       class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400"
+                       placeholder="e.g. 50000" oninput="calcRemaining()">
+            </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Amount (₹)</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Received Amount (₹)</label>
+                    <input type="number" name="receivedAmount" id="receivedAmount" step="0.01" min="0" required
+                           class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400"
+                           placeholder="e.g. 20000" oninput="calcRemaining()">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Remaining Amount (₹)</label>
+                    <input type="number" name="remainingAmount" id="remainingAmount" step="0.01" min="0" readonly
+                           class="w-full px-4 py-2.5 border border-gray-100 bg-gray-50 rounded-xl text-sm text-gray-500 cursor-not-allowed">
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Amount (₹) <span class="text-gray-400 text-xs">(this bill)</span></label>
                     <input type="number" name="amount" step="0.01" required min="0"
                            class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400">
                 </div>
@@ -55,5 +74,13 @@ require_once __DIR__ . '/../layouts/admin-header.php';
         </form>
     </div>
 </div>
+
+<script>
+function calcRemaining() {
+    const total    = parseFloat(document.getElementById('totalProjectCost').value) || 0;
+    const received = parseFloat(document.getElementById('receivedAmount').value) || 0;
+    document.getElementById('remainingAmount').value = Math.max(0, total - received).toFixed(2);
+}
+</script>
 
 <?php require_once __DIR__ . '/../layouts/admin-footer.php'; ?>

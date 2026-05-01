@@ -85,8 +85,20 @@
                     </tr>
                 </tbody>
                 <tfoot class="bg-gray-50 border-t border-gray-200">
-                    <tr>
-                        <td class="px-5 py-4 font-semibold text-gray-700 text-sm">Total Amount</td>
+                    <tr class="border-t border-gray-100">
+                        <td class="px-5 py-3 text-sm text-gray-500">Total Project Cost</td>
+                        <td class="px-5 py-3 text-right font-semibold text-indigo-600">₹<?= number_format($payment['totalProjectCost'] ?? 0, 2) ?></td>
+                    </tr>
+                    <tr class="border-t border-gray-100">
+                        <td class="px-5 py-3 text-sm text-gray-500">Received Amount</td>
+                        <td class="px-5 py-3 text-right font-semibold text-emerald-600">₹<?= number_format($payment['receivedAmount'] ?? 0, 2) ?></td>
+                    </tr>
+                    <tr class="border-t border-gray-100">
+                        <td class="px-5 py-3 text-sm text-gray-500">Remaining Amount</td>
+                        <td class="px-5 py-3 text-right font-semibold text-amber-600">₹<?= number_format($payment['remainingAmount'] ?? 0, 2) ?></td>
+                    </tr>
+                    <tr class="border-t border-gray-200">
+                        <td class="px-5 py-4 font-semibold text-gray-700 text-sm">Bill Amount</td>
                         <td class="px-5 py-4 text-right">
                             <span class="text-xl font-bold text-indigo-600">₹<?= number_format($invoice['amount'], 2) ?></span>
                         </td>

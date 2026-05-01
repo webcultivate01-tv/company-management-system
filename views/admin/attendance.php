@@ -31,6 +31,10 @@ require_once __DIR__ . '/../layouts/admin-header.php';
         <div class="flex items-end gap-2">
             <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">Filter</button>
             <a href="<?= BASE_URL ?>/admin/attendance" class="px-4 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition-colors">Reset</a>
+            <a href="<?= BASE_URL ?>/admin/export/attendance/csv?month=<?= urlencode($filterMonth) ?>&user=<?= urlencode($filterUser) ?>&date=<?= urlencode($filterDate) ?>"
+               class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm">⬇ CSV</a>
+            <a href="<?= BASE_URL ?>/admin/export/attendance/pdf?month=<?= urlencode($filterMonth) ?>&user=<?= urlencode($filterUser) ?>&date=<?= urlencode($filterDate) ?>" target="_blank"
+               class="px-3 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm">⬇ PDF</a>
         </div>
     </form>
 </div>

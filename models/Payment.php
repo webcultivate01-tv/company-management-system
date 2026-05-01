@@ -5,9 +5,12 @@ class Payment extends BaseModel {
     protected string $collectionName = 'payments';
 
     public function createPayment(array $data): string {
-        $data['status']      = 'unpaid';
-        $data['paidDate']    = null;
-        $data['billingMonth'] = $data['billingMonth'] ?? date('Y-m');
+        $data['status']           = 'unpaid';
+        $data['paidDate']         = null;
+        $data['billingMonth']     = $data['billingMonth'] ?? date('Y-m');
+        $data['totalProjectCost'] = (float)($data['totalProjectCost'] ?? 0);
+        $data['receivedAmount']   = (float)($data['receivedAmount'] ?? 0);
+        $data['remainingAmount']  = max(0, $data['totalProjectCost'] - $data['receivedAmount']);
         return $this->insertOne($data);
     }
 

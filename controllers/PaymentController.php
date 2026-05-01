@@ -78,11 +78,14 @@ class PaymentController extends BaseController {
             $clientId = $this->sanitize($this->post('clientId'));
             $plans    = $this->planModel->getByClient($clientId);
             $data = [
-                'clientId'     => $clientId,
-                'planId'       => $this->sanitize($this->post('planId')),
-                'amount'       => (float)$this->post('amount'),
-                'billingMonth' => $this->sanitize($this->post('billingMonth')),
-                'dueDate'      => $this->sanitize($this->post('dueDate')),
+                'clientId'         => $clientId,
+                'planId'           => $this->sanitize($this->post('planId')),
+                'amount'           => (float)$this->post('amount'),
+                'totalProjectCost' => (float)$this->post('totalProjectCost'),
+                'receivedAmount'   => (float)$this->post('receivedAmount'),
+                'remainingAmount'  => (float)$this->post('remainingAmount'),
+                'billingMonth'     => $this->sanitize($this->post('billingMonth')),
+                'dueDate'          => $this->sanitize($this->post('dueDate')),
             ];
             $id = $this->paymentModel->createPayment($data);
             $this->setFlash('success', 'Payment record created');
