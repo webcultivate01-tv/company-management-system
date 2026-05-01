@@ -7,7 +7,9 @@ class Payment extends BaseModel {
     public function createPayment(array $data): string {
         $data['status']           = 'unpaid';
         $data['paidDate']         = null;
-        $data['billingMonth']     = $data['billingMonth'] ?? date('Y-m');
+        $data['billingMonth']     = date('Y-m', strtotime($data['receivedDate'] ?? 'now'));
+        $data['dueDate']          = $data['receivedDate'] ?? date('Y-m-d');
+        $data['amount']           = (float)($data['receivedAmount'] ?? 0);
         $data['totalProjectCost'] = (float)($data['totalProjectCost'] ?? 0);
         $data['receivedAmount']   = (float)($data['receivedAmount'] ?? 0);
         $data['remainingAmount']  = max(0, $data['totalProjectCost'] - $data['receivedAmount']);

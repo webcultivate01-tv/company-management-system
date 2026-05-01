@@ -77,6 +77,7 @@ $routes = [
     'GET:admin/payments/send-invoice/{id}'       => ['PaymentController', 'sendInvoice'],
 
     // Exports
+    'GET:admin/export'                      => ['ExportController', 'page'],
     'GET:admin/export/clients/{format}'     => ['ExportController', 'clients'],
     'GET:admin/export/payments/{format}'    => ['ExportController', 'payments'],
     'GET:admin/export/employees/{format}'   => ['ExportController', 'employees'],

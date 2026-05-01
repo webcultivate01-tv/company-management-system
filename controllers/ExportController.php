@@ -18,6 +18,12 @@ class ExportController extends BaseController {
         $this->attendanceModel = new Attendance();
     }
 
+    public function page(): void {
+        $this->requireRole('admin');
+        $users = $this->userModel->getAllUsers();
+        $this->view('admin/export', ['users' => $users]);
+    }
+
     // ── Clients ──────────────────────────────────────────────
     public function clients(string $format): void {
         $this->requireRole('admin');
@@ -60,16 +66,13 @@ class ExportController extends BaseController {
         $map     = [];
         foreach ($clients as $c) $map[(string)$c['_id']] = $c['name'];
 
-        $headers = ['Client', 'Project Cost (₹)', 'Received (₹)', 'Remaining (₹)', 'Bill Amount (₹)', 'Billing Month', 'Due Date', 'Paid Date', 'Status'];
+        $headers = ['Client', 'Project Cost (₹)', 'Received (₹)', 'Remaining (₹)', 'Received Date', 'Status'];
         $data    = array_map(fn($r) => [
             $map[$r['clientId']] ?? $r['clientId'],
             $r['totalProjectCost'] ?? 0,
             $r['receivedAmount']   ?? 0,
             $r['remainingAmount']  ?? 0,
-            $r['amount'],
-            $r['billingMonth'],
-            $r['dueDate'],
-            $r['paidDate'] ?? '—',
+            $r['receivedDate'] ?? ($r['dueDate'] ?? '—'),
             ucfirst($r['status']),
         ], $rows);
 
